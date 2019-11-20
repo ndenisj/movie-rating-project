@@ -1,14 +1,22 @@
-import React, {Fragment} from 'react';
+import React from "react";
 
-const MovieList = (props) => {
+const MovieList = props => {
+	const movieClicked = movie => evt => {
+		//console.log(movie);
+		props.movieClicked(movie);
+	};
 
-    return (
-        <Fragment>
-        {props.movies.map(movie => {
-            return <h3 key={movie.id}>{movie.title}</h3>
-        })}
-        </Fragment>
-    )
-}
+	return (
+		<div>
+			{props.movies.map(movie => {
+				return (
+					<h3 key={movie.id} onClick={movieClicked(movie)}>
+						{movie.title}
+					</h3>
+				);
+			})}
+		</div>
+	);
+};
 
 export default MovieList;
