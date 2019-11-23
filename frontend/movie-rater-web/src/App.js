@@ -11,7 +11,7 @@ class App extends Component {
 
 	componentDidMount() {
 		// fetch data
-		fetch("http://127.0.0.1:8000/api/movies/", {
+		fetch(`${process.env.REACT_API_URL}/api/movies/`, {
 			method: "GET",
 			headers: {
 				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
@@ -22,7 +22,7 @@ class App extends Component {
 			.catch(err => console.log(err));
 	}
 
-	movieClicked = movie => {
+	loadMovie = movie => {
 		this.setState({ selectedMovie: movie });
 	};
 
@@ -31,11 +31,11 @@ class App extends Component {
 			<div className='App'>
 				<h1>Movie Rater</h1>
 				<div className='layout'>
-					<MovieList
-						movies={this.state.movies}
-						movieClicked={this.movieClicked}
+					<MovieList movies={this.state.movies} loadMovie={this.loadMovie} />
+					<MovieDetails
+						movie={this.state.selectedMovie}
+						updateMovie={this.loadMovie}
 					/>
-					<MovieDetails movie={this.state.selectedMovie} />
 				</div>
 			</div>
 		);

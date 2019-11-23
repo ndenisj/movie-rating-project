@@ -16,3 +16,10 @@
 .orange {
 	color: orange;
 }
+
+.purple {
+	color: purple;
+}
+.rate-container {
+	border-top: 2px solid purple;
+}
