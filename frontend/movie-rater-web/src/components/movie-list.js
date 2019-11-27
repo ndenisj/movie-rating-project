@@ -12,7 +12,7 @@ const MovieList = props => {
 			method: "DELETE",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
+				Authorization: `Token ${props.token}`,
 			},
 		})
 			.then(res => props.movieDeleted(movie))

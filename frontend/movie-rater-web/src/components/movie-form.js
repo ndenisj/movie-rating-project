@@ -23,7 +23,7 @@ class MovieForm extends Component {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
+				Authorization: `Token ${this.props.token}`,
 			},
 			body: JSON.stringify(this.state.editedMovie),
 		})
@@ -37,7 +37,7 @@ class MovieForm extends Component {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
+				Authorization: `Token ${this.props.token}`,
 			},
 			body: JSON.stringify(this.state.editedMovie),
 		})

@@ -3,6 +3,7 @@ import "./App.css";
 import MovieList from "./components/movie-list";
 import MovieDetails from "./components/movie-details";
 import MovieForm from "./components/movie-form";
+import { withCookies } from "react-cookie";
 var FontAwesome = require("react-fontawesome");
 
 class App extends Component {
@@ -10,19 +11,25 @@ class App extends Component {
 		movies: [],
 		selectedMovie: null,
 		editedMovie: null,
+		token: this.props.cookies.get("mr-token"),
 	};
 
 	componentDidMount() {
-		// fetch data
-		fetch(`${process.env.REACT_APP_API_URL}/api/movies/`, {
-			method: "GET",
-			headers: {
-				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
-			},
-		})
-			.then(res => res.json())
-			.then(res => this.setState({ movies: res }))
-			.catch(err => console.log(err));
+		// check if token is set
+		if (this.state.token) {
+			// fetch data
+			fetch(`${process.env.REACT_APP_API_URL}/api/movies/`, {
+				method: "GET",
+				headers: {
+					Authorization: `Token ${this.state.token}`,
+				},
+			})
+				.then(res => res.json())
+				.then(res => this.setState({ movies: res }))
+				.catch(err => console.log(err));
+		} else {
+			window.location.href = "/";
+		}
 	}
 
 	loadMovie = movie => {
@@ -62,12 +69,14 @@ class App extends Component {
 						movieDeleted={this.movieDeleted}
 						editClicked={this.editClicked}
 						newMovie={this.newMovie}
+						token={this.state.token}
 					/>
 					<div>
 						{!this.state.editedMovie ? (
 							<MovieDetails
 								movie={this.state.selectedMovie}
 								updateMovie={this.loadMovie}
+								token={this.state.token}
 							/>
 						) : (
 							<MovieForm
@@ -75,6 +84,7 @@ class App extends Component {
 								cancelForm={this.cancelForm}
 								addMovie={this.addMovie}
 								editedMovie={this.loadMovie}
+								token={this.state.token}
 							/>
 						)}
 					</div>
@@ -84,4 +94,4 @@ class App extends Component {
 	}
 }
 
-export default App;
+export default withCookies(App);

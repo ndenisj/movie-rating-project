@@ -18,7 +18,7 @@ class MovieDetails extends Component {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
+					Authorization: `Token ${this.props.token}`,
 				},
 				body: JSON.stringify({ stars: stars + 1 }),
 			}
@@ -33,7 +33,7 @@ class MovieDetails extends Component {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
-				Authorization: "Token aedf194084db2d8e6df86819e68964460bfad7c3",
+				Authorization: `Token ${this.props.token}`,
 			},
 		})
 			.then(res => res.json())
