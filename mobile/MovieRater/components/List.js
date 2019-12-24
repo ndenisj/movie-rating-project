@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -7,25 +7,45 @@ import {
 	Button,
 	Image,
 	TouchableOpacity,
+	AsyncStorage,
 } from "react-native";
 
 const MovieList = props => {
 	const [movies, setMovies] = useState([]);
+	let token = null;
+
+	const getData = async () => {
+		token = await AsyncStorage.getItem("MR_TOKEN");
+		if (token) {
+			getMovies();
+		} else {
+			props.navigation.navigate("Auth");
+		}
+	};
 
 	useEffect(() => {
-		fetch("http://192.168.88.14:8000/api/movies/", {
+		getData();
+	}, []);
+
+	const getMovies = () => {
+		fetch("http://192.168.8.101:8000/api/movies/", {
 			method: "GET",
 			headers: {
-				Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+				Authorization: `Token ${token}`,
 			},
 		})
 			.then(res => res.json())
 			.then(jsonRes => setMovies(jsonRes))
 			.catch(e => console.log(e));
-	});
+	};
 
 	const movieClicked = movie => {
-		props.navigation.navigate("Detail", { movie: movie, title: movie.title });
+		console.log(token);
+		props.navigation.navigate("Detail", {
+			movie: movie,
+			title: movie.title,
+			token: token,
+		});
 	};
 
 	return (
@@ -62,21 +82,29 @@ MovieList.navigationOptions = screenProps => ({
 		fontSize: 24,
 	},
 	headerRight: (
-		<Button
-			title='Add New'
-			color='orange'
-			onPress={() =>
-				screenProps.navigation.navigate("Edit", {
-					movie: {
-						title: "",
-						description: "",
-					},
-					action: "add",
-				})
-			}
-		/>
+		<Fragment>
+			<Button
+				title='Add New'
+				color='orange'
+				onPress={() =>
+					screenProps.navigation.navigate("Edit", {
+						movie: {
+							title: "",
+							description: "",
+						},
+						action: "add",
+					})
+				}
+			/>
+			<Button title='Logout' color='blue' onPress={() => logout(screenProps)} />
+		</Fragment>
 	),
 });
+
+const logout = async props => {
+	await AsyncStorage.removeItem("MR_TOKEN");
+	props.navigation.navigate("Auth");
+};
 
 export default MovieList;
 

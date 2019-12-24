@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	TextInput,
+	Button,
+	Alert,
+	AsyncStorage,
+} from "react-native";
 
 const Edit = props => {
 	const movie = props.navigation.getParam("movie", null);
+	// const token = props.navigation.getParam("token", "");
 	const [title, setTitle] = useState(movie.title);
 	const [description, setDescription] = useState(movie.description);
 
+	let token = null;
+	const getData = async () => {
+		token = await AsyncStorage.getItem("MR_TOKEN");
+		if (!token) {
+			props.navigation.navigate("Auth");
+		}
+	};
+
+	useEffect(() => {
+		getData();
+	});
+
 	const saveMovie = () => {
+		console.log(token);
 		if (movie.id) {
-			fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/`, {
+			fetch(`http://192.168.8.101:8000/api/movies/${movie.id}/`, {
 				method: "PUT",
 				headers: {
-					Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+					Authorization: `Token ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
@@ -24,16 +46,17 @@ const Edit = props => {
 					props.navigation.navigate("Detail", {
 						movie: movie,
 						title: movie.title,
+						token: token,
 					});
 				})
 				.catch(e => console.log(e));
 
 			// props.navigation.goBack();
 		} else {
-			fetch(`http://192.168.88.14:8000/api/movies/`, {
+			fetch(`http://192.168.8.101:8000/api/movies/`, {
 				method: "POST",
 				headers: {
-					Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+					Authorization: `Token ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
@@ -101,12 +124,15 @@ Edit.navigationOptions = screenProps => ({
 		),
 });
 
-const removeMovie = props => {
+const removeMovie = async props => {
 	const movie = props.navigation.getParam("movie");
-	fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/`, {
+
+	let token = await AsyncStorage.getItem("MR_TOKEN");
+
+	fetch(`http://192.168.8.101:8000/api/movies/${movie.id}/`, {
 		method: "DELETE",
 		headers: {
-			Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+			Authorization: `Token ${token}`,
 			"Content-Type": "application/json",
 		},
 	})

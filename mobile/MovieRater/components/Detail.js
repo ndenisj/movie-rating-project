@@ -5,14 +5,15 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 const Detail = props => {
 	const movie = props.navigation.getParam("movie", null);
+	const token = props.navigation.getParam("token", "");
 	const [highlight, setHighlight] = useState(0);
 
 	const rateClicked = () => {
 		if (highlight > 0 && highlight < 6) {
-			fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/rate_movie/`, {
+			fetch(`http://192.168.8.101:8000/api/movies/${movie.id}/rate_movie/`, {
 				method: "POST",
 				headers: {
-					Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+					Authorization: `Token ${token}`,
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
@@ -110,6 +111,7 @@ Detail.navigationOptions = screenProps => ({
 			onPress={() =>
 				screenProps.navigation.navigate("Edit", {
 					movie: screenProps.navigation.getParam("movie"),
+					token: screenProps.navigation.getParam("token"),
 					action: "edit",
 				})
 			}
