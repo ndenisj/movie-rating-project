@@ -4,6 +4,7 @@ import {
 	Text,
 	View,
 	FlatList,
+	Button,
 	Image,
 	TouchableOpacity,
 } from "react-native";
@@ -49,6 +50,33 @@ const MovieList = props => {
 		</View>
 	);
 };
+
+MovieList.navigationOptions = screenProps => ({
+	title: "List of Movies",
+	headerStyle: {
+		backgroundColor: "orange",
+	},
+	headerTintColor: "white",
+	headerTitleStyle: {
+		fontWeight: "bold",
+		fontSize: 24,
+	},
+	headerRight: (
+		<Button
+			title='Add New'
+			color='orange'
+			onPress={() =>
+				screenProps.navigation.navigate("Edit", {
+					movie: {
+						title: "",
+						description: "",
+					},
+					action: "add",
+				})
+			}
+		/>
+	),
+});
 
 export default MovieList;
 

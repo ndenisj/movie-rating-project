@@ -110,6 +110,7 @@ Detail.navigationOptions = screenProps => ({
 			onPress={() =>
 				screenProps.navigation.navigate("Edit", {
 					movie: screenProps.navigation.getParam("movie"),
+					action: "edit",
 				})
 			}
 		/>

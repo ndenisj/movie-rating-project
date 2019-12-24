@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, StyleSheet, TextInput, Button, Alert } from "react-native";
 
 const Edit = props => {
 	const movie = props.navigation.getParam("movie", null);
@@ -7,27 +7,46 @@ const Edit = props => {
 	const [description, setDescription] = useState(movie.description);
 
 	const saveMovie = () => {
-		fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/`, {
-			method: "PUT",
-			headers: {
-				Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				title: title,
-				description: description,
-			}),
-		})
-			.then(res => res.json())
-			.then(movie => {
-				props.navigation.navigate("Detail", {
-					movie: movie,
-					title: movie.title,
-				});
+		if (movie.id) {
+			fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/`, {
+				method: "PUT",
+				headers: {
+					Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					title: title,
+					description: description,
+				}),
 			})
-			.catch(e => console.log(e));
+				.then(res => res.json())
+				.then(movie => {
+					props.navigation.navigate("Detail", {
+						movie: movie,
+						title: movie.title,
+					});
+				})
+				.catch(e => console.log(e));
 
-		// props.navigation.goBack();
+			// props.navigation.goBack();
+		} else {
+			fetch(`http://192.168.88.14:8000/api/movies/`, {
+				method: "POST",
+				headers: {
+					Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					title: title,
+					description: description,
+				}),
+			})
+				.then(res => res.json())
+				.then(movie => {
+					props.navigation.navigate("MovieList");
+				})
+				.catch(e => Alert.alert("Error", e));
+		}
 	};
 
 	return (
@@ -46,7 +65,11 @@ const Edit = props => {
 				onChangeText={desc => setDescription(desc)}
 				value={description}
 			/>
-			<Button onPress={() => saveMovie()} title='SAVE' color='orange' />
+			<Button
+				onPress={() => saveMovie()}
+				title={movie.id ? "EDIT" : "SAVE"}
+				color='orange'
+			/>
 		</View>
 	);
 };
@@ -54,7 +77,10 @@ const Edit = props => {
 export default Edit;
 
 Edit.navigationOptions = screenProps => ({
-	title: "Edit Movie",
+	title:
+		screenProps.navigation.getParam("action") == "edit"
+			? "Edit Movie"
+			: "Add New Movie",
 	headerStyle: {
 		backgroundColor: "orange",
 	},
