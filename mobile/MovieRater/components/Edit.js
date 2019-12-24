@@ -89,7 +89,32 @@ Edit.navigationOptions = screenProps => ({
 		fontWeight: "bold",
 		fontSize: 24,
 	},
+	headerRight:
+		screenProps.navigation.getParam("action") == "edit" ? (
+			<Button
+				title='Delete'
+				color='red'
+				onPress={() => removeMovie(screenProps)}
+			/>
+		) : (
+			""
+		),
 });
+
+const removeMovie = props => {
+	const movie = props.navigation.getParam("movie");
+	fetch(`http://192.168.88.14:8000/api/movies/${movie.id}/`, {
+		method: "DELETE",
+		headers: {
+			Authorization: `Token 8323e066366f6ec79bb0555dd6cc49172b12d600`,
+			"Content-Type": "application/json",
+		},
+	})
+		.then(movie => {
+			props.navigation.navigate("MovieList");
+		})
+		.catch(e => console.log(e));
+};
 
 const styles = StyleSheet.create({
 	input: {

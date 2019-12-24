@@ -22,7 +22,7 @@ const MovieList = props => {
 			.then(res => res.json())
 			.then(jsonRes => setMovies(jsonRes))
 			.catch(e => console.log(e));
-	}, []);
+	});
 
 	const movieClicked = movie => {
 		props.navigation.navigate("Detail", { movie: movie, title: movie.title });
