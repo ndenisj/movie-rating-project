@@ -21,9 +21,10 @@ const Detail = props => {
 			})
 				.then(res => res.json())
 				.then(res => {
+					setHighlight(0);
 					Alert.alert("Rating", res.message);
 				})
-				.catch(e => console.log(e));
+				.catch(e => Alert.alert("Error", e));
 		}
 	};
 
